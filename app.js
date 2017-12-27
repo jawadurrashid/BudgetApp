@@ -107,11 +107,27 @@ var UIController = (function() {
           //Insert HTML into DOM (Will be inserted as last child of container - 'beforeend')
           document.querySelector(element).insertAdjacentHTML('beforeend', newHtml);
       },  
-          
         
+
+      clearFields: function() {
+            var fields, fieldsArray;
+            
+            fields = document.querySelectorAll(DOMstrings.inputDescription + ', ' + DOMstrings.inputValue);
+            
+            //Convert non-live NodeList to Array
+            fieldsArray = Array.prototype.slice.call(fields);
+            
+            fieldsArray.forEach(function(current, index, array) {
+                current.value = "";
+            });
+            
+            //Sets focus on "Add Desciption" field so user can continue to add items
+            fieldsArray[0].focus();
+        },        
+          
       getDOMstrings: function(){
           return DOMstrings;
-        }  
+      }  
     };
 
 })();
@@ -150,10 +166,13 @@ var AppController = (function(budgetControl, UIControl) {
     
         //3. Add item/data to UI
         UIControl.addListItem(newItem, input.type);
+        
+        //4. Clear the fields
+        UIControl.clearFields();    
     
-        //4. Calculate budget
+        //5. Calculate budget
     
-        //5. Display budget on the UI
+        //6. Display budget on the UI
         
     };
     
