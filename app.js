@@ -67,6 +67,24 @@ var budgetController = (function() {
         
         },
         
+        deleteItem: function(type, id){
+            var index, ids;
+            
+           //Function has access to current element, current index and entire array
+           ids = Data.allItems[type].map(function(current){
+               return current.id;
+           });
+            
+           index = ids.indexOf(id);
+            
+           if(index !== -1){
+               Data.allItems[type].splice(index, 1,);
+           }
+            
+        },
+        
+        
+        
         calculateBudget: function(){
           
             //1.Calculate total income and expenses
@@ -112,8 +130,12 @@ var UIController = (function() {
         inputValue: '.add__value',
         inputButton: '.add__btn',
         incomeContainer: '.income__list',
-        expenseContainer: '.expenses__list',
-        
+        expenseContainer: '.expenses__list',   
+        budgetLabel: '.budget__value',
+        incomeLabel: '.budget__income--value',
+        expenseLabel: '.budget__expenses--value',
+        percantageLabel: '.budget__expenses--percentage',
+        container: '.container'
     };
     
     
@@ -150,6 +172,15 @@ var UIController = (function() {
       },  
         
 
+      deleteListItem: function(selectorID){
+          
+          var element = document.getElementById(selectorID);
+          element.parentNode.removeChild(element);
+      
+      },          
+        
+    
+        
       clearFields: function() {
             var fields, fieldsArray;
             
@@ -166,8 +197,18 @@ var UIController = (function() {
             fieldsArray[0].focus();
         },   
         
-      displayBudget: function(object){
+      displayBudget: function(obj){
         
+        
+          document.querySelector(DOMstrings.budgetLabel).textContent = obj.budget;
+          document.querySelector(DOMstrings.incomeLabel).textContent = obj.totalIncome;
+          document.querySelector(DOMstrings.expenseLabel).textContent = obj.totalExpenses;
+            
+          if(obj.percentage > 0){
+              document.querySelector(DOMstrings.percantageLabel).textContent = obj.percentage + '%';    
+          } else {
+              document.querySelector(DOMstrings.percantageLabel).textContent = '-/-';     
+          }
           
       },    
           
@@ -198,6 +239,9 @@ var AppController = (function(budgetControl, UIControl) {
                 controlAddItem();
             }
         }); 
+        
+        document.querySelector(DOM.container).addEventListener('click', controlDeleteItem);
+        
     };
    
     var updateBudget = function(){
@@ -210,7 +254,7 @@ var AppController = (function(budgetControl, UIControl) {
         Budget = budgetControl.getBudget();        
         
         //3. Display budget on the UI
-        console.log(Budget);
+        UIControl.displayBudget(Budget);
     }
     
     var controlAddItem = function(){
@@ -236,9 +280,41 @@ var AppController = (function(budgetControl, UIControl) {
         }
     };
     
+    var controlDeleteItem = function(event){
+        var itemID, split, type, ID;
+        
+        //DOM traversing; deleting entire section rather than exlusively removing the "X" button that triggers the event 
+        itemID = event.target.parentNode.parentNode.parentNode.parentNode.id;
+        
+        if(itemID){
+            
+            // Example: "inc-1"
+            splitID = itemID.split('-');
+            type = splitID[0];
+            ID = parseInt(splitID[1]);
+            
+            //Delete item from data structure
+            budgetControl.deleteItem(type, ID);
+            
+            //Delete item from UI
+            UIControl.deleteListItem(itemID);
+            
+            //Update UI with new budget
+            updateBudget();
+            
+        }
+    };
+    
     return {
         init: function(){
             console.log('Application has started');
+            UIControl.displayBudget({
+                budget: 0,
+                totalIncome: 0,
+                totalExpenses: 0,
+                percentage: -1
+            });
+            
             setUpEventListeners();
         }
     }
