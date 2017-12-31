@@ -30,7 +30,7 @@ body {
 
 .top {
     height: 40vh;
-    background-image: linear-gradient(rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.35)), url(back.png);
+    background-image: linear-gradient(rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.35)), url(background.jpg);
     background-size: cover;
     background-position: center;
     position: relative;
@@ -67,11 +67,12 @@ body {
 }
 
 .budget__income {
-    margin-bottom: 10px;
+    margin-bottom: 6px;
     background-color: #28B9B5;
 }
 
 .budget__expenses {
+    margin-bottom: 6px;
     background-color: #FF5049;
 }
 
