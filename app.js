@@ -1,6 +1,6 @@
-//Implementing stand-alone modules
+// Implementing stand-alone modules
 
-//Budget Controller
+// Budget Controller
 var budgetController = (function() {
     
     var Expense = function(id, description, value){
@@ -58,9 +58,9 @@ var budgetController = (function() {
         addItem: function(type, des, val){
             var ID, newItem;
             
-            //Id of new item should equal to the value of the last ID in the array added by 1
+            // Id of new item should equal to the value of the last ID in the array added by 1
             
-            //Create new ID
+            // Create new ID
             if(Data.allItems[type].length > 0){
                 ID = Data.allItems[type][Data.allItems[type].length - 1].id + 1;                
             } else {
@@ -68,14 +68,14 @@ var budgetController = (function() {
             }
         
            
-            //Create new item based off type: 'inc' or 'exp'
+            // Create new item based off type: 'inc' or 'exp'
             if (type === 'exp'){
                 newItem =  new Expense(ID, des, val);
             }  else if (type === 'inc'){
                 newItem = new Income(ID, des, val);
             }
       
-            //Push to data structure and return new Item
+            // Push to data structure and return new Item
             Data.allItems[type].push(newItem);
             return newItem;
         
@@ -84,7 +84,7 @@ var budgetController = (function() {
         deleteItem: function(type, id){
             var index, ids;
             
-           //Function has access to current element, current index and entire array
+           // Function has access to current element, current index and entire array
            ids = Data.allItems[type].map(function(current){
                return current.id;
            });
@@ -100,14 +100,14 @@ var budgetController = (function() {
         
         calculateBudget: function(){
           
-            //1.Calculate total income and expenses
+            // 1.Calculate total income and expenses
             calculateTotal('inc');
             calculateTotal('exp');
             
-            //2.Calculate budget (Income - Expenses)
+            // 2.Calculate budget (Income - Expenses)
             Data.budget = Data.totals.inc - Data.totals.exp;
             
-            //3.Calculate percentage of income spent (Expenses / Income)
+            // 3.Calculate percentage of income spent (Expenses / Income)
             if(Data.totals.inc > 0){
                 Data.percentage = Math.round((Data.totals.exp / Data.totals.inc) * 100);
             } else {
@@ -171,9 +171,8 @@ var UIController = (function() {
     
    var formatNumber = function(number, type){          
 
-          //Format:
+          // Format:
           // Ex: 2000.6789 --> + 2,000.68 && 2000 --> + + 2,000.00
-          
           var integer, decimal, type, numberSplit;
                   
           // Implement exactly two decimal points
@@ -214,8 +213,7 @@ var UIController = (function() {
       addListItem: function(obj, type){
           var html, newHtml, element;
           
-          //Create HTML string with placeholder text
-           
+          // Create HTML string with placeholder text
           if(type === 'inc'){
                element = DOMstrings.incomeContainer;
                html = '<div class="item clearfix" id="inc-%id%"> <div class="item__description">%description%</div><div class="right clearfix"><div class="item__value">%value%</div><div class="item__delete"><button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button></div></div></div>';
@@ -225,12 +223,12 @@ var UIController = (function() {
                html = '<div class="item clearfix" id="exp-%id%"><div class="item__description">%description%</div><div class="right clearfix"><div class="item__value">%value%</div><div class="item__percentage">21%</div><div class="item__delete"><button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button></div></div></div>'; 
           }
         
-          //Replace placeholder text with real data
+          // Replace placeholder text with real data
           newHtml = html.replace('%id%', obj.id);
           newHtml = newHtml.replace('%description%', obj.description);
           newHtml = newHtml.replace('%value%', formatNumber(obj.value, type));
 
-          //Insert HTML into DOM (Will be inserted as last child of container - 'beforeend')
+          // Insert HTML into DOM (Will be inserted as last child of container - 'beforeend')
           document.querySelector(element).insertAdjacentHTML('beforeend', newHtml);
       },  
         
@@ -247,14 +245,14 @@ var UIController = (function() {
             
             fields = document.querySelectorAll(DOMstrings.inputDescription + ', ' + DOMstrings.inputValue);
             
-            //Convert non-live NodeList to Array
+            // Convert non-live NodeList to Array
             fieldsArray = Array.prototype.slice.call(fields);
             
             fieldsArray.forEach(function(current, index, array) {
                 current.value = "";
             });
             
-            //Sets focus on "Add Desciption" field so user can continue to add items
+            // Sets focus on "Add Desciption" field so user can continue to add items
             fieldsArray[0].focus();
         },   
         
@@ -331,19 +329,19 @@ var UIController = (function() {
 
 
 
-//Synchronizing Budget and UI controllers
+// Synchronizing Budget and UI controllers
 
-//Global App Controller
+// Global App Controller
 var AppController = (function(budgetControl, UIControl) {
     
     var setUpEventListeners = function(){
         
         var DOM = UIControl.getDOMstrings();
     
-        //Add button event listener
+        // Add button event listener
         document.querySelector(DOM.inputButton).addEventListener('click', controlAddItem);
 
-        //"Enter" button event listener
+        // "Enter" button event listener
         document.addEventListener('keypress', function(event){
             if(event.keyCode === 13 || event.which === 13){
                 controlAddItem();
@@ -359,13 +357,13 @@ var AppController = (function(budgetControl, UIControl) {
     var updateBudget = function(){
         var Budget;    
         
-        //1. Calculate budget
+        // 1. Calculate budget
         budgetControl.calculateBudget();
     
-        //2. Return budget
+        // 2. Return budget
         Budget = budgetControl.getBudget();        
         
-        //3. Display budget on the UI
+        // 3. Display budget on the UI
         UIControl.displayBudget(Budget);
     }
     
@@ -387,24 +385,24 @@ var AppController = (function(budgetControl, UIControl) {
         console.log("Button was clicked.");
         var newItem, input;
         
-        //1. Get user inputted data
+        // 1. Get user inputted data
         input = UIControl.getInput();
         
         if(input.description !== "" && !isNaN(input.value) && input.value > 0){
        
-            //2. Add item/data to budget controller
+            // 2. Add item/data to budget controller
             newItem = budgetControl.addItem(input.type, input.description, input.value);
     
-            //3. Add item/data to UI
+            // 3. Add item/data to UI
             UIControl.addListItem(newItem, input.type);
         
-            //4. Clear the fields
+            // 4. Clear the fields
             UIControl.clearFields();        
          
-            //5. Calculate and update budget
+            // 5. Calculate and update budget
             updateBudget();
             
-            //6. Calculate and update percentages
+            // 6. Calculate and update percentages
             updatePercentages();
         }
     };
@@ -412,7 +410,7 @@ var AppController = (function(budgetControl, UIControl) {
     var controlDeleteItem = function(event){
         var itemID, split, type, ID;
         
-        //DOM traversing; deleting entire section rather than exlusively removing the "X" button that triggers the event 
+        // DOM traversal; deleting entire section rather than exlusively removing the "X" button that triggers the event 
         itemID = event.target.parentNode.parentNode.parentNode.parentNode.id;
         
         if(itemID){
@@ -422,18 +420,17 @@ var AppController = (function(budgetControl, UIControl) {
             type = splitID[0];
             ID = parseInt(splitID[1]);
             
-            //Delete item from data structure
+            // Delete item from data structure
             budgetControl.deleteItem(type, ID);
             
-            //Delete item from UI
+            // Delete item from UI
             UIControl.deleteListItem(itemID);
             
-            //Update UI with new budget
+            // Update UI with new budget
             updateBudget();
             
-            //Calculate and update percentages
+            // Calculate and update percentages
             updatePercentages();
-            
         }
     };
     
