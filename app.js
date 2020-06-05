@@ -172,7 +172,7 @@ var UIController = (function() {
    var formatNumber = function(number, type){          
 
           // Format:
-          // Ex: 2000.6789 --> + 2,000.68 && 2000 --> + + 2,000.00
+          // Ex: 2000.6789 --> + 2,000.68 && 2000 --> + 2,000.00
           var integer, decimal, type, numberSplit;
                   
           // Implement exactly two decimal points
@@ -204,7 +204,7 @@ var UIController = (function() {
     return {
       getInput: function(){
           return {
-              type: document.querySelector(DOMstrings.inputType).value, //Either Income or Expense
+              type: document.querySelector(DOMstrings.inputType).value, // Either Income or Expense
               description: document.querySelector(DOMstrings.inputDescription).value,
               value: parseFloat(document.querySelector(DOMstrings.inputValue).value)
           };    
