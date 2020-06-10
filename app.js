@@ -92,7 +92,7 @@ var budgetController = (function() {
            index = ids.indexOf(id);
             
            if(index !== -1){
-               Data.allItems[type].splice(index, 1,);
+               Data.allItems[type].splice(index, 1);
            }
             
         },
